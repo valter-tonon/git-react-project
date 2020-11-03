@@ -4,7 +4,6 @@ export const Wrapper = styled.form `
 display: flex;
 justify-content: center;
 padding-top: 180px;
-
 input {
     
     width:400px;
@@ -26,6 +25,8 @@ input {
 a {
 
     height: 50px;
+    display: flex;
+    justify-content: center;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     border: none;

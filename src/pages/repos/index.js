@@ -1,38 +1,55 @@
 import React ,{useEffect} from 'react'
 import { useSelector, useDispatch} from 'react-redux'
-import { getAllRepos } from '../../store/fetchActions'
+import { getAllRepos, ListRepositories } from '../../store/fetchActions'
 import {Wrapper} from './styles'
+import Menu from "../../components/Menu";
+import Moment from 'react-moment'
+import Repositorio from "../../components/repositorios";
 
-const Repos = ()=>{
+const Repos = ({match})=>{
     const repos = useSelector((state) => state.repos)
+    const listRepos = useSelector((state)=>state.list)
+    const quantidade = useSelector((state)=>state.list.length)
     const dispatch = useDispatch()
-
-    const url = window.location.href
-    const url_id = url.slice(url.indexOf('&') + 1)
     
     useEffect(()=>{
-        dispatch(getAllRepos(url_id))
+        dispatch(getAllRepos(match.params.nome))
     },[dispatch])
-    
-    console.log(repos)
+    console.log(listRepos)
     return(
         <Wrapper>
-            <h1>Repositorios</h1>
+           <Menu/>
             {
                 repos.map(repo =>(
-                    <div class='user' key={repo.id}>
+                    <div className='user' key={repo.id}>
                         <img src={repo.avatar_url} alt={repo.login}/>
-                        <div class="user-details">
-                            <h3><b>Usuário: </b>{repo.login}</h3>
-                            <h3><b>Site: </b><a href={repo.blog}>{repo.blog}</a></h3>
-                            <h3><b>Endereço: </b>{repo.location}</h3>
-                            
+                        <div className="user-details">
+                            <div className='first-column'>
+                                <h3><b>Usuário: </b>{repo.login}</h3>
+                                <h3><b>Site: </b><a href={repo.blog}>{repo.blog}</a></h3>
+                                <h3><b>Endereço: </b>{repo.location}</h3>
+                                <h3><b>e-mail: </b>{repo.email}</h3>
+                            </div>
+                            <div className='second-column'>
+                                <h3><b>Desde: </b>
+                                    <Moment format='DD/MM/YYYY'>{repo.created_at}</Moment>
+                                </h3>
+                                <h3><b>Seguidores: </b>{repo.followers}</h3>
+                                <h3><b>Seguindo: </b>{repo.following}</h3>
+                            </div>
                         </div>
-                        
+                        <div className='botao'>
+                            <button onClick={() => (dispatch(ListRepositories(match.params.nome)))}>Ver Repositórios</button>
+                        </div>
+
                     </div>
                 ))
                 
             }
+            { listRepos.map(list => (
+                <Repositorio nome={list.name} link={list.html_url} descricao={list.description}/>
+            ))
+                 }
         </Wrapper>
     )
   
